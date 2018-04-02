@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './App.css';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-// import { enableRipple } from '@syncfusion/ej2-base';
+import { enableRipple } from '@syncfusion/ej2-base';
 
 const logo = require('./logo.svg');
 
-// enableRipple(true);
+enableRipple(true);
 
 interface CustomItem {
     id: string;
@@ -13,29 +13,30 @@ interface CustomItem {
     body: string;
 }
 
-class SampleComponent extends React.Component<{ items: Array<CustomItem> }, {}> {
+class SampleComponent extends React.Component<{items: Array<CustomItem>}, {}> {
     render() {
         return (
-            <ul>
-                {this.props.items.map((item: CustomItem) => (
-                    <li key={item.id}>{item.title}</li> 
+            <ul list-style-type="circle" >
+                {this.props.items.map((item) => (
+                    [
+                    <li key={item.id}>{item.title}</li>,
+                    <li key={item.id}>{item.body}</li> 
+                    ]
                 ))}
             </ul>
         );
     }
 }
 
-class App extends React.Component<{}, { items: Array<CustomItem> }> {
+class App extends React.Component<{}, {items: Array<CustomItem>}> {
 
     constructor(props: any) {
         super(props);
         this.state = {
             items: []
         };
-    }
 
-    componentDidMount(): void {
-        this.update = this.update.bind(this);
+        this.fetchme = this.fetchme.bind(this);
     }
 
     update(json: CustomItem): void {
@@ -49,11 +50,12 @@ class App extends React.Component<{}, { items: Array<CustomItem> }> {
     }
 
     fetchme(): void {
-        let self = this;
         fetch('https://jsonplaceholder.typicode.com/posts/1')
-        .then((data) => data.json())
+        .then((data) => {
+            return data.json();
+        })
         .then((json) => {
-            self.update(json);
+            this.update(json);
         });
     }
 
